@@ -52,22 +52,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: 'master'
-          fetch-depth: '0'
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - run: |
-          git --version
-          git config user.name "GitHub Actions Bot"
-          git config user.email "<>"
-          git status
-          git merge origin/develop
-          git push
-
-      # - name: merge-pr-on-master
-      #   # run: gh pr merge develop --auto --merge
-      #   run: git checkout origin/master
-      # - run: git merge origin/develop
-      # - run: git push 
-      #   env:
-      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     ref: 'master'
+      #     fetch-depth: '0'
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      # - run: |
+      #     git --version
+      #     git config user.name "GitHub Actions Bot"
+      #     git config user.email "<>"
+      #     git status
+      #     git merge origin/develop
+      #     git push
+      - name: merge-pr-on-master
+        run: gh pr merge develop --auto --merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
