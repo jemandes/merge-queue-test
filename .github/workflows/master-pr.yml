@@ -13,6 +13,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - name: create-pr-on-master
-              run: gh pr create --fill-first --base=master --head=develop
+              run: |
+                gh pr create --title="chore: auto-merge from develop" --body="Automated merge from develop." --base=master --head=develop
               env:
                 GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
