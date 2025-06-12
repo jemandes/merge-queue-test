@@ -13,6 +13,6 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - name: create-pr-on-master
-              run: gh pr create --fill --base master
+              run: gh pr create --title="auto-merge" --body="auto PR to sync develop and master branches" --base origin/master
               env:
                 GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
