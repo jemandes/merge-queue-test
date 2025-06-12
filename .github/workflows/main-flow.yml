@@ -33,7 +33,7 @@ jobs:
       run: cargo test --verbose
 
   sync-master:
-    if: github.base_ref == 'develop'
+    if: github.ref_name == 'develop' && github.event_name == 'push'
     needs: "build-test"
     runs-on: ubuntu-latest
     permissions:
