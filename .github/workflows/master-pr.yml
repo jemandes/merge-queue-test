@@ -1,0 +1,17 @@
+name: master-pr
+
+on:
+    workflow_dispatch:
+    push:
+        branches: ["develop"]
+
+jobs:
+    sync:
+        permissions: write-all
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: create-pr-on-master
+              run: gh pr create --title="auto-merge" --body="auto PR to sync develop and master branches" --base=master --head=develop
+              env:
+                GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
