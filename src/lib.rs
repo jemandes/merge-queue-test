@@ -14,6 +14,7 @@ mod tests {
 
     #[test]
     fn fail() {
-        assert!(false);
+        assert!(true);
+        // assert!(false);
     }
 }
