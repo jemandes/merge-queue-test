@@ -13,6 +13,6 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - name: create-pr-on-master
-              run: gh pr create --fill --base=master --head=develop
+              run: gh pr create --fill-first --base=master --head=develop
               env:
                 GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
