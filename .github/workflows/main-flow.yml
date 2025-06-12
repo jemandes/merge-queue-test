@@ -1,0 +1,58 @@
+name: main-flow
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "develop", "wip-**/*", "master" ]
+  merge_group:
+    types: [checks_requested]
+  pull_request:
+    branches: [ "develop", "master" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+    - name: Output rust version for educational purposes
+      run: rustup --version
+    - name: Build
+      run: cargo build --verbose
+    - name: Run tests
+      run: cargo test --verbose
+
+  sync-master:
+    if: github.base_ref == 'develop'
+    needs: "build-test"
+    runs-on: ubuntu-latest
+    permissions:
+        pull-requests: write
+    steps:
+        - uses: actions/checkout@v4
+        - name: create-pr-on-master
+          run: |
+            gh pr create --title="chore: auto-merge from develop" --body="Automated merge from develop." --base=master --head=develop
+          env:
+            GH_TOKEN: ${{ secrets.PAT }}
+
+  auto-merge:
+    if: github.base_ref == 'master' && github.head_ref == 'develop'
+    needs: "build-test"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: merge-pr-on-master
+        run: gh pr merge develop --auto --merge
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
