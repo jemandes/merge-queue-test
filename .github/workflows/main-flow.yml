@@ -64,6 +64,6 @@ jobs:
       #     git merge origin/develop
       #     git push
       - name: merge-pr-on-master
-        run: gh pr merge develop --auto --merge
+        run: gh pr merge develop --auto --rebase
         env:
           GH_TOKEN: ${{ secrets.PAT }}
