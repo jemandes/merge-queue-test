@@ -13,6 +13,6 @@ jobs:
         steps:
         - uses: actions/checkout@v4
         - name: merge-pr-on-master
-          run: gh pr merge
+          run: gh pr merge develop --auto --merge
           env:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
