@@ -53,6 +53,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: merge-pr-on-master
-        run: gh pr merge develop --auto --merge
+        # run: gh pr merge develop --auto --merge
+        run: git checkout master
+      - run: git merge develop
+      - run: git push 
         env:
-          GH_TOKEN: ${{ secrets.PAT }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
