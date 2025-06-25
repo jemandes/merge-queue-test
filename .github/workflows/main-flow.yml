@@ -29,6 +29,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const changes = '${{ steps.cmp-changes.outputs.changes }}'.replaceAll('\\n', '\n')
+            const changes = changes.replaceAll(' ', ' ')
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
