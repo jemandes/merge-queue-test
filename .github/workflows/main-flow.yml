@@ -20,7 +20,7 @@ jobs:
           script: |
             if (context.issue.number && context.issue.number !== 'null' && context.issue.number !== 'undefined') {
               console.log(github.rest.pulls);
-              console.log(github.rest.listReviews({
+              console.log(github.rest.pulls.listReviews({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 pull_number: context.issue.number,
