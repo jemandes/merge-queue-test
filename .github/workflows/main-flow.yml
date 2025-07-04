@@ -23,11 +23,11 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 pull_number: context.issue.number,
-              }).data;
-              
-              console.log(reviews);
+              });
 
-              for (const review of reviews) {
+              console.log(reviews.data);
+
+              for (const review of reviews.data) {
                 if (review.state === "APPROVED") {
                   const dismissed_review = await github.rest.pulls.dismissReview({
                     owner: context.repo.owner,
