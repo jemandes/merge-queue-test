@@ -7,35 +7,56 @@ on:
 env:
   CARGO_TERM_COLOR: always
 
-jobs:   
-  cov-compare:
+jobs:
+  dismiss-approvals:
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     permissions:
-      actions: read
-      issues: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
-      - id: cmp-changes
-        run: |
-          export CHANGES=$(cat mantra_changes.md)
-          CHANGES="${CHANGES//\'/\\\'}"
-          CHANGES="${CHANGES//\"/\\\"}"
-          CHANGES="${CHANGES//$'\n'/\\\\n}"
-          CHANGES="${CHANGES// / }" 
-          echo "changes=$CHANGES" >> "$GITHUB_OUTPUT"
       - uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const tmp = '${{ steps.cmp-changes.outputs.changes }}'.replaceAll('\\n', '\n')
-            const changes = tmp.replaceAll(' ', ' ')
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: changes
-            })
+            if (context.issue.number && context.issue.number !== 'null' && context.issue.number !== 'undefined') {
+              console.log(github.rest.pulls);
+              console.log(github.rest.listReviews({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.issue.number,
+              }));
+            }
+  
+  # cov-compare:
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     actions: read
+  #     issues: write
+  #     pull-requests: write
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - id: cmp-changes
+  #       run: |
+  #         export CHANGES=$(cat mantra_changes.md)
+  #         CHANGES="${CHANGES//\'/\\\'}"
+  #         CHANGES="${CHANGES//\"/\\\"}"
+  #         CHANGES="${CHANGES//$'\n'/\\\\n}"
+  #         CHANGES="${CHANGES// / }" 
+  #         echo "changes=$CHANGES" >> "$GITHUB_OUTPUT"
+  #     - uses: actions/github-script@v7
+  #       with:
+  #         github-token: ${{ secrets.GITHUB_TOKEN }}
+  #         script: |
+  #           const tmp = '${{ steps.cmp-changes.outputs.changes }}'.replaceAll('\\n', '\n')
+  #           const changes = tmp.replaceAll(' ', ' ')
+  #           if (context.issue.number && context.issue.number !== 'null' && context.issue.number !== 'undefined') {
+  #             github.rest.issues.createComment({
+  #               issue_number: context.issue.number,
+  #               owner: context.repo.owner,
+  #               repo: context.repo.repo,
+  #               body: changes
+  #             })
+  #           }
 
   # build-test:
   #   runs-on: ubuntu-latest
