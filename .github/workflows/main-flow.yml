@@ -19,15 +19,13 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             if (context.issue.number && context.issue.number !== 'null' && context.issue.number !== 'undefined') {
-              const reviews = await github.rest.pulls.listReviews({
+              const reviews_response = await github.rest.pulls.listReviews({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 pull_number: context.issue.number,
               });
 
-              console.log(reviews.data);
-
-              for (const review of reviews.data) {
+              for (const review of reviews_response.data) {
                 if (review.state === "APPROVED") {
                   const dismissed_review = await github.rest.pulls.dismissReview({
                     owner: context.repo.owner,
@@ -36,7 +34,10 @@ jobs:
                     review_id: review.id,
                     message: "Dismissed approval due to new changes.",
                   });
-                  console.log(dismissed_review);
+
+                  if (dismissed_review.data.state !== "DISMISSED") {
+                    console.error(`Approval of review ${review.id} was not dismissed!`);
+                  }
                 }
               }
             }
